@@ -23,25 +23,51 @@ int main(void)
         {
             break;
         }
+        //my code below
 
-        char* tmpPtr = strtok(command, " ");
-        if(tmpPtr==NULL)
+        //strok returns ptr to first argument in string
+        char* first = strtok(command, " ");
+        if(first==NULL)
         {
             printf("ERROR: strtok failed\n");
             exit(1);
         }
-        printf("Before calling execvp()\n");
-        if(execvp(tmpPtr, command) <0)
+        char *argv[BUFFER_SIZE];
+        char *tmp = strtok(command ," ");
+        int i=0, j;
+        while(tmp!=NULL)
         {
-            printf(("ERROR: execvp failed\n"));
+            tmp = strtok(NULL, " ");
+            argv[i] = strtok(NULL, " ");
+            i++;
         }
+        //strcpy(first, cmd);//copies cmd to first
+        int status;
+        pid_t pid = fork();
+        if(pid<0)
+        {
+            printf("ERROR: fork failed\n");
+            exit(1);
+        }
+        else if(pid==0)
+        {
+            printf("Before calling execvp()\n");
+            if(execvp(first, argv) <0) //first arg is * second is **
+            {
+                printf(("ERROR: execvp failed\n"));
+            }
+        }
+        else while(wait(&status)!=pid)
+            ;
+
 
         printf("This line will not be printed if execvp() runs correctly\n");
 
-        free(tmpPtr);
-
-
-
+        free(first);
+        for(j=0; j<i; j++)
+        {
+            free(argv[j]);
+        }
     }
 
     return 0;
