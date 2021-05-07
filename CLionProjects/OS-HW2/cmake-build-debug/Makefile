@@ -168,32 +168,32 @@ concurrent_list.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\OS-HW2.dir\build.make CMakeFiles/OS-HW2.dir/concurrent_list.c.s
 .PHONY : concurrent_list.c.s
 
-main.obj: main.c.obj
+test.obj: test.c.obj
 
-.PHONY : main.obj
+.PHONY : test.obj
 
 # target to build an object file
-main.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\OS-HW2.dir\build.make CMakeFiles/OS-HW2.dir/main.c.obj
-.PHONY : main.c.obj
+test.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\OS-HW2.dir\build.make CMakeFiles/OS-HW2.dir/test.c.obj
+.PHONY : test.c.obj
 
-main.i: main.c.i
+test.i: test.c.i
 
-.PHONY : main.i
+.PHONY : test.i
 
 # target to preprocess a source file
-main.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\OS-HW2.dir\build.make CMakeFiles/OS-HW2.dir/main.c.i
-.PHONY : main.c.i
+test.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\OS-HW2.dir\build.make CMakeFiles/OS-HW2.dir/test.c.i
+.PHONY : test.c.i
 
-main.s: main.c.s
+test.s: test.c.s
 
-.PHONY : main.s
+.PHONY : test.s
 
 # target to generate assembly for a file
-main.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\OS-HW2.dir\build.make CMakeFiles/OS-HW2.dir/main.c.s
-.PHONY : main.c.s
+test.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\OS-HW2.dir\build.make CMakeFiles/OS-HW2.dir/test.c.s
+.PHONY : test.c.s
 
 # Help Target
 help:
@@ -207,9 +207,9 @@ help:
 	@echo ... concurrent_list.obj
 	@echo ... concurrent_list.i
 	@echo ... concurrent_list.s
-	@echo ... main.obj
-	@echo ... main.i
-	@echo ... main.s
+	@echo ... test.obj
+	@echo ... test.i
+	@echo ... test.s
 .PHONY : help
 
 

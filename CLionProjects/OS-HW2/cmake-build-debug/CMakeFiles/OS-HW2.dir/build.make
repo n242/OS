@@ -88,29 +88,29 @@ CMakeFiles/OS-HW2.dir/concurrent_list.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/OS-HW2.dir/concurrent_list.c.s"
 	E:\PROGRA~2\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\MyPC\CLionProjects\OS-HW2\concurrent_list.c -o CMakeFiles\OS-HW2.dir\concurrent_list.c.s
 
-CMakeFiles/OS-HW2.dir/main.c.obj: CMakeFiles/OS-HW2.dir/flags.make
-CMakeFiles/OS-HW2.dir/main.c.obj: ../main.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\MyPC\CLionProjects\OS-HW2\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/OS-HW2.dir/main.c.obj"
-	E:\PROGRA~2\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\OS-HW2.dir\main.c.obj -c C:\Users\MyPC\CLionProjects\OS-HW2\main.c
+CMakeFiles/OS-HW2.dir/test.c.obj: CMakeFiles/OS-HW2.dir/flags.make
+CMakeFiles/OS-HW2.dir/test.c.obj: ../test.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\MyPC\CLionProjects\OS-HW2\cmake-build-debug\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/OS-HW2.dir/test.c.obj"
+	E:\PROGRA~2\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles\OS-HW2.dir\test.c.obj -c C:\Users\MyPC\CLionProjects\OS-HW2\test.c
 
-CMakeFiles/OS-HW2.dir/main.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/OS-HW2.dir/main.c.i"
-	E:\PROGRA~2\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\MyPC\CLionProjects\OS-HW2\main.c > CMakeFiles\OS-HW2.dir\main.c.i
+CMakeFiles/OS-HW2.dir/test.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/OS-HW2.dir/test.c.i"
+	E:\PROGRA~2\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E C:\Users\MyPC\CLionProjects\OS-HW2\test.c > CMakeFiles\OS-HW2.dir\test.c.i
 
-CMakeFiles/OS-HW2.dir/main.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/OS-HW2.dir/main.c.s"
-	E:\PROGRA~2\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\MyPC\CLionProjects\OS-HW2\main.c -o CMakeFiles\OS-HW2.dir\main.c.s
+CMakeFiles/OS-HW2.dir/test.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/OS-HW2.dir/test.c.s"
+	E:\PROGRA~2\MINGW-~1\X86_64~1.0-P\mingw64\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S C:\Users\MyPC\CLionProjects\OS-HW2\test.c -o CMakeFiles\OS-HW2.dir\test.c.s
 
 # Object files for target OS-HW2
 OS__HW2_OBJECTS = \
 "CMakeFiles/OS-HW2.dir/concurrent_list.c.obj" \
-"CMakeFiles/OS-HW2.dir/main.c.obj"
+"CMakeFiles/OS-HW2.dir/test.c.obj"
 
 # External object files for target OS-HW2
 OS__HW2_EXTERNAL_OBJECTS =
 
 OS-HW2.exe: CMakeFiles/OS-HW2.dir/concurrent_list.c.obj
-OS-HW2.exe: CMakeFiles/OS-HW2.dir/main.c.obj
+OS-HW2.exe: CMakeFiles/OS-HW2.dir/test.c.obj
 OS-HW2.exe: CMakeFiles/OS-HW2.dir/build.make
 OS-HW2.exe: CMakeFiles/OS-HW2.dir/linklibs.rsp
 OS-HW2.exe: CMakeFiles/OS-HW2.dir/objects1.rsp

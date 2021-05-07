@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
   "CMakeFiles/OS-HW2.dir/concurrent_list.c.obj"
-  "CMakeFiles/OS-HW2.dir/main.c.obj"
+  "CMakeFiles/OS-HW2.dir/test.c.obj"
   "OS-HW2.exe"
   "OS-HW2.exe.manifest"
   "OS-HW2.pdb"

@@ -5,7 +5,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
   "C:/Users/MyPC/CLionProjects/OS-HW2/concurrent_list.c" "C:/Users/MyPC/CLionProjects/OS-HW2/cmake-build-debug/CMakeFiles/OS-HW2.dir/concurrent_list.c.obj"
-  "C:/Users/MyPC/CLionProjects/OS-HW2/main.c" "C:/Users/MyPC/CLionProjects/OS-HW2/cmake-build-debug/CMakeFiles/OS-HW2.dir/main.c.obj"
+  "C:/Users/MyPC/CLionProjects/OS-HW2/test.c" "C:/Users/MyPC/CLionProjects/OS-HW2/cmake-build-debug/CMakeFiles/OS-HW2.dir/test.c.obj"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 

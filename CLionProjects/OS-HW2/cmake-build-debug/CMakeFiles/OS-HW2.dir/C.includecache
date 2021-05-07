@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/MyPC/CLionProjects/OS-HW2/concurrent_list.c
+stdio.h
+-
+stdlib.h
+-
+limits.h
+-
+concurrent_list.h
+C:/Users/MyPC/CLionProjects/OS-HW2/concurrent_list.h
+
+C:/Users/MyPC/CLionProjects/OS-HW2/concurrent_list.h
+pthread.h
+-
+

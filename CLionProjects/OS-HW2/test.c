@@ -7,7 +7,7 @@
 #include <errno.h>
 #include <ctype.h>
 #include <sys/time.h>
-#include <sys/resource.h>
+//#include <sys/resource.h> //TODO: add later
 #include "concurrent_list.h"
 
 #define CMD_BUFFER_SIZE 100

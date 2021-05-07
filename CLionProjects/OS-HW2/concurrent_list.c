@@ -7,7 +7,7 @@
 struct node {
   int value;
   node* next;
-  mutex_t m;
+  pthread_mutex_t mutex ;
   //QUEUE? check if necessary
 };
 
@@ -104,11 +104,9 @@ void remove_value(list* list, int value)
   }
   if(list->head->value == value)
   {
-      mutex_lock(&list->head->m);
         node* tmp_node = list->head;
         list->head = list->head->next;
         free(tmp_node);
-      mutex_unlock(&list->head->m);
         return;
   }
   else{
@@ -116,7 +114,6 @@ void remove_value(list* list, int value)
     while(list->head->next->value!= value)
     {
         list->head= list->head->next;
-        //remove_value(list, value); //recursive call
     }
    // current value is one to remove
    node* next_node = list->head->next->next; //list->next is node need to remove
@@ -132,13 +129,12 @@ void print_list(list* list)
     node* tmp = list->head;
     while(list->head!=NULL)
   {
-      printf("%d", list->head->value);
-      printf("\n"); // DO NOT DELETE
+      printf("%d ", list->head->value);
       list->head = list->head->next;
-      //print_list(list->head->next)
   }
   list->head = tmp;
     }
+    printf("\n"); // DO NOT DELETE
     return;
     //while not null and unlocked - lock and print
 }
@@ -147,11 +143,26 @@ void count_list(list* list, int (*predicate)(int))
 {
   int count = 0; // DO NOT DELETE
   node* tmp = list->head; //saving head ptr
-  while(list->head)
+
+  while(list->head && list->head->next)
   {
+      pthread_mutex_init(&(list->head->mutex), NULL); //creating mutex for current
+      pthread_mutex_lock(&list->head->mutex);
+      pthread_mutex_init(&(list->head->next->mutex), NULL); //creating mutex for next
+      pthread_mutex_lock(&list->head->next->mutex);
       count++;
+      pthread_mutex_unlock(&list->head->next->mutex);
+      node* curr = list->head;
       list->head=list->head->next;
+      pthread_mutex_unlock(&curr->mutex);
   }
+
+    pthread_mutex_init(&(list->head->mutex), NULL); //locking for adding current
+    pthread_mutex_lock(&list->head->mutex);
+    count++;
+    pthread_mutex_unlock(&list->head->mutex);
+
     list->head = tmp; //restoring head ptr
+
   printf("%d items were counted\n", count); // DO NOT DELETE
 }
