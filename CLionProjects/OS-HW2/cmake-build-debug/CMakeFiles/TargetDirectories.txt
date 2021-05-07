@@ -1,0 +1,3 @@
+C:/Users/MyPC/CLionProjects/OS-HW2/cmake-build-debug/CMakeFiles/OS-HW2.dir
+C:/Users/MyPC/CLionProjects/OS-HW2/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/MyPC/CLionProjects/OS-HW2/cmake-build-debug/CMakeFiles/rebuild_cache.dir
