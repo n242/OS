@@ -9,15 +9,15 @@ struct node {
   node* next;
   pthread_mutex_t mutex ;
   //TODO: QUEUE? check if necessary - if starvation is checked
-}
+};
 
 struct list {
     node* head;
     //node* tail;
     //TODO: check what other fields to add - mutex?
-}
-/*
- * void print_node(node* node)
+};
+
+void print_node(node* node)
 {
   // DO NOT DELETE
   if(node)
@@ -25,12 +25,10 @@ struct list {
     printf("%d ", node->value);
   }
 }
- */
-
 
 list* create_list() //TODO: check if a mutex is necessary here
 {
-    list *new_list=NULL;
+    list* new_list=NULL;
     if (!(new_list = (list*) malloc(sizeof(list))))
     {
         printf("Memory overflow in create_list.\n");
@@ -43,24 +41,39 @@ list* create_list() //TODO: check if a mutex is necessary here
 
 void delete_list(list* list)
 {
-    while(list->head && list->head->next)//delete while not null and next for mutex
+    if(!list){
+        return;
+    }
+    if(list->head){
+
+
+    pthread_mutex_lock(&list->head->mutex);
+    while(list->head->next)//delete while not null and next for mutex
     {
-        pthread_mutex_lock(&list->head->mutex);
         pthread_mutex_lock(&list->head->next->mutex);
         node* delete_node = list->head;
         //while(0){
-            pthread_mutex_unlock(&list->head->next->mutex);
+        pthread_mutex_unlock(&list->head->next->mutex);
         list->head=list->head->next;
-        free(delete_node);//TODO: check it's legal
+        pthread_mutex_unlock(&list->head->mutex);
+        pthread_mutex_destroy(&list->head->mutex);
+        free(delete_node);
     }
-    pthread_mutex_lock(&list->head->mutex); //locking again to free final node
+
+    if(list->head->next){ //TODO: fix mutex here
+        pthread_mutex_unlock(&list->head->next->mutex);
+        pthread_mutex_destroy(&list->head->next->mutex);
+        free(list->head->next);
+        }
+    pthread_mutex_unlock(&list->head->mutex);
+    pthread_mutex_destroy(&list->head->mutex);
+    }
     free(list->head);
     free(list);
 }
 
 void insert_value(list* list, int value) {
-
-    node *new_node = NULL;
+    node* new_node = NULL;
     if (!(new_node = (node *) malloc(sizeof(node)))) {
         printf("Memory overflow in insert.\n");
         exit(100);
@@ -103,106 +116,93 @@ void insert_value(list* list, int value) {
 }
 void remove_value(list* list, int value)
 {
-  //save next of prev, delete myself, unlock prev
   if(list->head==NULL){
-      return; //didn't find value
+      return; //value not in empty list
   }
-  if(list->head->next == NULL ){
-      pthread_mutex_lock(&list->head->mutex);
-      if(list->head->value==value){
+  pthread_mutex_lock(&list->head->mutex);
+  if(list->head->value==value){
+      if(list->head->next == NULL ){
+          pthread_mutex_unlock(&list->head->mutex);
           free(list->head);
           return;
       }
       else{
+          node* tmp_node = list->head;
+          list->head = list->head->next;
           pthread_mutex_unlock(&list->head->mutex);
+          free(tmp_node);
+          return;
       }
   }
-  if(list->head->value == value)
+  if(list->head->next == NULL)
   {
-      pthread_mutex_lock(&list->head->mutex);
-      node* tmp_node = list->head;
-      list->head = list->head->next;
       pthread_mutex_unlock(&list->head->mutex);
-      free(tmp_node);
-      return;
+      return; //didn't find value
   }
   else{ //have more than 1 node in list
+      pthread_mutex_lock(&list->head->next->mutex); //locking to get next, head is still locked
     node* tmp = list->head;
-    while(list->head->next && list->head->next->value!= value)
+    while(list->head->next && list->head->next->value < value)
     {
-        pthread_mutex_lock(&list->head->mutex); //locking to get next
         node* curr = list->head;
         list->head = list->head->next;
-        pthread_mutex_unlock(&curr->mutex);
+        pthread_mutex_lock(&list->head->mutex); //locked next
+        pthread_mutex_unlock(&curr->mutex); //TODO: everywhere lock next then unlock current
     }
    if(list->head->next && list->head->next->value == value){ //found value in list
-       pthread_mutex_lock(&list->head->mutex);
        node* next_node = list->head->next->next;
+       pthread_mutex_unlock(&list->head->next->mutex);
        free(list->head->next);
-       list->head->next = next_node;
        pthread_mutex_unlock(&list->head->mutex);
+       list->head->next = next_node;
    }
     list->head = tmp; //restoring head ptr
+    pthread_mutex_unlock(&list->head->mutex);
   }
 }
 
 void print_list(list* list)
 {
-    if(list->head){
+    if(list && list->head){
         node* tmp = list->head;
-        while(list->head && list->head->next)
-        {
-            if(pthread_mutex_lock(&list->head->mutex)!=0){
-            perror("mutex_lock");
-            exit(2);
-        }
-        pthread_mutex_lock(&list->head->next->mutex);
-
-        printf("%d ", list->head->value);
-        pthread_mutex_unlock(&list->head->next->mutex);
-        node* curr = list->head;
-        list->head=list->head->next;
-            //while(0) {
-                pthread_mutex_unlock(&curr->mutex);
-            //}
-        }
         pthread_mutex_lock(&list->head->mutex);
+        while(list->head && list->head->next) //while not null and unlocked - lock and print
+        {
+            pthread_mutex_lock(&list->head->next->mutex);
+            printf("%d ", list->head->value);
+            node* curr = list->head;
+            list->head=list->head->next;
+            pthread_mutex_unlock(&curr->mutex);
+        }
         printf("%d ", list->head->value);
+        list->head = tmp;
         pthread_mutex_unlock(&list->head->mutex);
-
-    list->head = tmp;
     }
     printf("\n"); // DO NOT DELETE
     return;
-    //while not null and unlocked - lock and print
 }
 
 void count_list(list* list, int (*predicate)(int))
 {
   int count = 0; // DO NOT DELETE
+  if(list == NULL){
+      printf("%d items were counted\n", count); // DO NOT DELETE
+      return;
+  }
+  pthread_mutex_lock(&list->head->mutex);
   node* tmp = list->head; //saving head ptr
-
   while(list->head && list->head->next)
   {
-      //while(1){
-      pthread_mutex_lock(&list->head->mutex);
       pthread_mutex_lock(&list->head->next->mutex);
-      count++;
-      //}
-      //while(0){
-          pthread_mutex_unlock(&list->head->next->mutex);
-      //}
-
+      count += predicate(list->head->value); //predicate returns 1 if we get value bigger than inserted
       node* curr = list->head;
       list->head=list->head->next;
-      //while(0){
-          pthread_mutex_unlock(&curr->mutex);
-  //}
+      pthread_mutex_unlock(&curr->next->mutex);
   }
-    pthread_mutex_lock(&list->head->mutex);
-    count++;
-    pthread_mutex_unlock(&list->head->mutex);
-    list->head = tmp; //restoring head ptr
-
+  if(list->head){
+      count += predicate(list->head->value); //counting current
+      list->head = tmp; //restoring head ptr
+      pthread_mutex_unlock(&list->head->mutex);
+  }
   printf("%d items were counted\n", count); // DO NOT DELETE
 }

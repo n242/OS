@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.19)
 project(OS-HW2 C)
 
 set(CMAKE_C_STANDARD 99)
-#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread")
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 

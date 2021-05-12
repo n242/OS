@@ -1,0 +1,4 @@
+valgrind --leak-check=full --suppressions=minimal.supp ./test < test_file.in
+
+
+valgrind --tool=memcheck --leak-check=yes --track-origins=yes -v ./test < test_file.in

@@ -1,4 +1,3 @@
-//#include <pthread.h> // TODO: remove later
 typedef struct node node;
 typedef struct list list;
 

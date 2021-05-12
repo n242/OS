@@ -7,6 +7,8 @@
 #IncludeRegexTransform: 
 
 C:/Users/MyPC/CLionProjects/OS-HW2/concurrent_list.c
+pthread.h
+-
 stdio.h
 -
 stdlib.h
@@ -17,6 +19,4 @@ concurrent_list.h
 C:/Users/MyPC/CLionProjects/OS-HW2/concurrent_list.h
 
 C:/Users/MyPC/CLionProjects/OS-HW2/concurrent_list.h
-pthread.h
--
 
