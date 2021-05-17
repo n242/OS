@@ -8,13 +8,12 @@ struct node {
   int value;
   node* next;
   pthread_mutex_t mutex ;
-  //TODO: QUEUE? check if necessary - if starvation is checked
 };
 
 struct list {
     node* head;
     //node* tail;
-    //TODO: check what other fields to add - mutex?
+    pthread_mutex_t mutex ;
 };
 
 void print_node(node* node)
@@ -26,7 +25,7 @@ void print_node(node* node)
   }
 }
 
-list* create_list() //TODO: check if a mutex is necessary here
+list* create_list()
 {
     list* new_list=NULL;
     if (!(new_list = (list*) malloc(sizeof(list))))
@@ -35,6 +34,7 @@ list* create_list() //TODO: check if a mutex is necessary here
         exit(100);
     }
     new_list->head = NULL;
+    pthread_mutex_init(&(new_list->mutex), NULL); //initializing mutex here so can lock elsewhere
    // new_list->tail = new_list->head;
   return new_list;
 }
@@ -42,33 +42,28 @@ list* create_list() //TODO: check if a mutex is necessary here
 void delete_list(list* list)
 {
     if(!list){
-        return;
+        return; //list is null, nothing to delete
     }
+    pthread_mutex_lock(&list->mutex);
     if(list->head){
-
-
-    pthread_mutex_lock(&list->head->mutex);
-    while(list->head->next)//delete while not null and next for mutex
-    {
-        pthread_mutex_lock(&list->head->next->mutex);
-        node* delete_node = list->head;
-        //while(0){
-        pthread_mutex_unlock(&list->head->next->mutex);
-        list->head=list->head->next;
-        pthread_mutex_unlock(&list->head->mutex);
-        pthread_mutex_destroy(&list->head->mutex);
-        free(delete_node);
-    }
-
-    if(list->head->next){ //TODO: fix mutex here
-        pthread_mutex_unlock(&list->head->next->mutex);
-        pthread_mutex_destroy(&list->head->next->mutex);
-        free(list->head->next);
+        pthread_mutex_lock(&list->head->mutex);
+        while(list->head->next)//delete while not null and next for mutex
+        {
+            pthread_mutex_lock(&list->head->next->mutex);
+            node* delete_node = list->head;
+            //while(0){
+            list->head=list->head->next;
+            pthread_mutex_unlock(&list->head->mutex);
+            //pthread_mutex_destroy(&list->head->mutex);
+            free(delete_node);
         }
-    pthread_mutex_unlock(&list->head->mutex);
-    pthread_mutex_destroy(&list->head->mutex);
+        pthread_mutex_unlock(&list->head->mutex);
+        //pthread_mutex_destroy(&list->head->mutex);
+        free(list->head);
     }
-    free(list->head);
+
+    pthread_mutex_unlock(&list->mutex);
+   // pthread_mutex_destroy(&list->mutex);
     free(list);
 }
 
@@ -85,8 +80,8 @@ void insert_value(list* list, int value) {
         list->head = new_node;
         return;
     }
+    pthread_mutex_lock(&list->head->mutex);
     if (list->head->value > value) {//insert node at top
-        pthread_mutex_lock(&list->head->mutex);
         node *next_node = list->head;
         pthread_mutex_unlock(&list->head->mutex);
         list->head = new_node;
@@ -96,23 +91,20 @@ void insert_value(list* list, int value) {
         node* tmp = list->head; // saving list ptr before while
         while (list->head->next && list->head->next->value < value)
         {
-            pthread_mutex_lock(&list->head->mutex); //locking to get next
+            pthread_mutex_lock(&list->head->next->mutex); //locking to get next
             node* curr = list->head;
             list->head = list->head->next;
             pthread_mutex_unlock(&curr->mutex);
         }
         if (list->head->value < value) //insert node after head
         {
-            pthread_mutex_lock(&list->head->mutex);
             node *next_node = list->head->next;
             list->head->next = new_node;
             pthread_mutex_unlock(&list->head->mutex);//finished dealing with node so can unlock
             new_node->next = next_node;
         }
         list->head = tmp; //restoring list ptr
-    }
-    //create new node in correct place, lock prev, create current
-    // mutex unlocked
+    } //had to unlock head anyway beforehand
 }
 void remove_value(list* list, int value)
 {
@@ -126,7 +118,7 @@ void remove_value(list* list, int value)
           free(list->head);
           return;
       }
-      else{
+      else{ //found value in head, next isn't null
           node* tmp_node = list->head;
           list->head = list->head->next;
           pthread_mutex_unlock(&list->head->mutex);
@@ -140,33 +132,39 @@ void remove_value(list* list, int value)
       return; //didn't find value
   }
   else{ //have more than 1 node in list
-      pthread_mutex_lock(&list->head->next->mutex); //locking to get next, head is still locked
-    node* tmp = list->head;
-    while(list->head->next && list->head->next->value < value)
-    {
-        node* curr = list->head;
-        list->head = list->head->next;
-        pthread_mutex_lock(&list->head->mutex); //locked next
-        pthread_mutex_unlock(&curr->mutex); //TODO: everywhere lock next then unlock current
-    }
-   if(list->head->next && list->head->next->value == value){ //found value in list
-       node* next_node = list->head->next->next;
+        node* tmp = list->head;
+        while(list->head->next && list->head->next->value < value)
+        {
+            pthread_mutex_lock(&list->head->next->mutex); //locked next while isn't already locked
+            node* curr = list->head;
+            list->head = list->head->next;
+            pthread_mutex_unlock(&curr->mutex); //TODO: everywhere lock next then unlock current
+        }
+       if(list->head->next && list->head->next->value == value){ //found value in list
+           node* next_node = list->head->next->next;
+           pthread_mutex_unlock(&list->head->next->mutex);
+           free(list->head->next);
+           pthread_mutex_unlock(&list->head->mutex);
+           list->head->next = next_node;
+       }
+
+   else{ //didn't find value, unlocking next
+       list->head = tmp; //restoring head ptr
        pthread_mutex_unlock(&list->head->next->mutex);
-       free(list->head->next);
        pthread_mutex_unlock(&list->head->mutex);
-       list->head->next = next_node;
+       return;
    }
-    list->head = tmp; //restoring head ptr
-    pthread_mutex_unlock(&list->head->mutex);
+   list->head = tmp; //restoring head ptr
   }
+    pthread_mutex_unlock(&list->head->mutex);
 }
 
 void print_list(list* list)
 {
     if(list && list->head){
-        node* tmp = list->head;
         pthread_mutex_lock(&list->head->mutex);
-        while(list->head && list->head->next) //while not null and unlocked - lock and print
+        node* tmp = list->head;
+        while(list->head->next) //while not null and unlocked - lock and print
         {
             pthread_mutex_lock(&list->head->next->mutex);
             printf("%d ", list->head->value);
@@ -175,8 +173,9 @@ void print_list(list* list)
             pthread_mutex_unlock(&curr->mutex);
         }
         printf("%d ", list->head->value);
+        pthread_mutex_unlock(&list->head->mutex);//unlocking current
         list->head = tmp;
-        pthread_mutex_unlock(&list->head->mutex);
+        pthread_mutex_unlock(&list->head->mutex); //unlocking head TODO: check if necessary
     }
     printf("\n"); // DO NOT DELETE
     return;

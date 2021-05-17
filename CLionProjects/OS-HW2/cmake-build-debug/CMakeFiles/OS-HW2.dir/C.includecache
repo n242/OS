@@ -6,17 +6,25 @@
 
 #IncludeRegexTransform: 
 
-C:/Users/MyPC/CLionProjects/OS-HW2/concurrent_list.c
-pthread.h
--
-stdio.h
+C:/Users/MyPC/CLionProjects/OS-HW2/concurrent_list.h
+
+C:/Users/MyPC/CLionProjects/OS-HW2/test.c
+string.h
 -
 stdlib.h
 -
-limits.h
+stdio.h
+-
+pthread.h
+-
+unistd.h
+-
+errno.h
+-
+ctype.h
+-
+sys/time.h
 -
 concurrent_list.h
-C:/Users/MyPC/CLionProjects/OS-HW2/concurrent_list.h
-
 C:/Users/MyPC/CLionProjects/OS-HW2/concurrent_list.h
 
