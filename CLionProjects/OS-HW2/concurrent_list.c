@@ -74,6 +74,7 @@ void insert_value(list* list, int value) {
         exit(100);
     }
     new_node->value = value;
+    new_node->next = NULL;
     pthread_mutex_init(&(new_node->mutex), NULL); //initializing mutex here so can lock elsewhere
     if (list->head==NULL) { //nothing to lock
         new_node->next = NULL;
@@ -106,6 +107,56 @@ void insert_value(list* list, int value) {
         list->head = tmp; //restoring list ptr
     } //had to unlock head anyway beforehand
 }
+
+
+/*
+ *  while (list->head->next && list->head->next->value < value)
+        {
+            pthread_mutex_lock(&list->head->next->mutex); //locking to get next
+            node* curr = list->head;
+            list->head = list->head->next;
+            pthread_mutex_unlock(&curr->mutex);
+        }
+        if (list->head->value < value) //insert node after head
+        {
+            node *next_node = list->head->next;
+            list->head->next = new_node;
+            pthread_mutex_unlock(&list->head->mutex);//finished dealing with node so can unlock
+            new_node->next = next_node;
+        }
+        list->head = tmp; //restoring list ptr
+    } //had to unlock head anyway beforehand
+}
+
+
+
+
+ else{ //need to insert value to mid-list
+        node* tmp = list->head; // saving list ptr before while
+        int flag = 0;
+        if(list->head->next){
+            pthread_mutex_lock(&list->head->next->mutex);
+        }
+        while (list->head->next && list->head->next->value < value)
+        {
+            if(flag==1){
+                pthread_mutex_lock(&list->head->next->mutex); }//locking to get next
+            node* curr = list->head;
+            list->head = list->head->next;
+            pthread_mutex_unlock(&curr->mutex);
+            flag = 1;
+        }
+        if (list->head->value < value) //insert node after head
+        {
+            node *next_node = list->head->next;
+            list->head->next = new_node;
+            pthread_mutex_unlock(&list->head->mutex);//finished dealing with node so can unlock
+            new_node->next = next_node;
+        }
+        list->head = tmp; //restoring list ptr
+    } //had to unlock head anyway beforehand
+}
+ */
 void remove_value(list* list, int value)
 {
   if(list->head==NULL){
@@ -138,7 +189,7 @@ void remove_value(list* list, int value)
             pthread_mutex_lock(&list->head->next->mutex); //locked next while isn't already locked
             node* curr = list->head;
             list->head = list->head->next;
-            pthread_mutex_unlock(&curr->mutex); //TODO: everywhere lock next then unlock current
+            pthread_mutex_unlock(&curr->mutex);
         }
        if(list->head->next && list->head->next->value == value){ //found value in list
            node* next_node = list->head->next->next;
